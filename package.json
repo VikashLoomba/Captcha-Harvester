@@ -1,0 +1,11 @@
+{
+  "name": "@valoomba/captchaharvester",
+  "version": "0.0.1",
+  "description": "Captcha Harvester Powered by Playwright",
+  "main": "Harvester.js",
+  "author": "Automata Labs",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.0.2"
+  }
+}
