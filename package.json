@@ -1,5 +1,5 @@
 {
-  "name": "@valoomba/captchaharvester",
+  "name": "captchaharvester",
   "version": "0.0.1",
   "description": "Captcha Harvester Powered by Playwright",
   "main": "Harvester.js",
