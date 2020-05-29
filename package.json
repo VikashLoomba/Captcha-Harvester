@@ -1,6 +1,6 @@
 {
   "name": "recaptcha-harvester",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Captcha Harvester Powered by Playwright",
   "main": "Harvester.js",
   "author": "Automata Labs",

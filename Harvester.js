@@ -51,11 +51,28 @@ class CaptchaHarvester {
         `;
     }
 
-    async start_captcha_harvester() {
+    async login_to_google() {
+        try {
+            let browser = await webkit.launch({ headless: false });
+            let captcha_page = await browser.newPage({ viewport: { width: 400, height: 700 } });
+            await captcha_page.goto('https://www.gmail.com');
+            await captcha_page.waitForSelector('.aim', { timeout: 0 });
+            let cookies = await captcha_page.context().cookies();
+            await browser.close();
+            return cookies;
+        } catch(e) {
+            throw(e);
+        }
+    }
+
+    async start_captcha_harvester(cookies) {
         const task_harvester = { uuid: this.uuidv4(), browser: null, captcha_page: null };
         try {
             let browser = await webkit.launch({ headless: false });
             let captcha_page = await browser.newPage({ viewport: { width: 400, height: 700 } });
+            if(cookies) {
+                await captcha_page.context().addCookies(cookies);
+            }
             // Set up the route redirection to render a captcha.
             await captcha_page.route(`${this.site_host}`, route => {
                 route.fulfill({
