@@ -1,5 +1,6 @@
 const { webkit } = require('playwright');
-
+const { writeCookies, restoreCookies, cookiesPath } = require('./utils/write_cookies');
+const fs = require('fs')
 class CaptchaHarvester {
     constructor(site_key, site_host) {
         this.captcha_bank = [];
@@ -51,28 +52,33 @@ class CaptchaHarvester {
         `;
     }
 
-    async login_to_google() {
+    async login_to_google(new_account = false) {
         try {
+            if(!new_account && await restoreCookies()) {
+                console.log("Already have google cookies written.");
+                return true;
+            }
             let browser = await webkit.launch({ headless: false });
             let captcha_page = await browser.newPage({ viewport: { width: 400, height: 700 } });
             await captcha_page.goto('https://www.gmail.com');
             await captcha_page.waitForSelector('.aim', { timeout: 0 });
             let cookies = await captcha_page.context().cookies();
+            await writeCookies(cookies);
             await browser.close();
-            return cookies;
+            return true;
         } catch(e) {
             throw(e);
         }
     }
 
-    async start_captcha_harvester(cookies) {
+    async start_captcha_harvester() {
         const task_harvester = { uuid: this.uuidv4(), browser: null, captcha_page: null };
         try {
+            await this.login_to_google();
             let browser = await webkit.launch({ headless: false });
             let captcha_page = await browser.newPage({ viewport: { width: 400, height: 700 } });
-            if(cookies) {
-                await captcha_page.context().addCookies(cookies);
-            }
+            let cookies = await restoreCookies(captcha_page);
+            await captcha_page.context().addCookies(cookies);
             // Set up the route redirection to render a captcha.
             await captcha_page.route(`${this.site_host}`, route => {
                 route.fulfill({
