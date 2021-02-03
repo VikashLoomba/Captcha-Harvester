@@ -28,8 +28,12 @@ const restoreCookies = async page => {
   try {
     const buffer = await readFileAsync(cookiesPath);
     const cookies = JSON.parse(buffer);
+    if(page) {
+        await page.setCookie(...cookies);
+    } else if(cookies) {
+      return true
+    }
     // console.log(`Loading ${cookies.length}, cookies into browser`);
-    await page.setCookie(...cookies);
   } catch (err) {
     console.log(err);
   }
