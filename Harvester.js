@@ -1,5 +1,5 @@
 const { webkit } = require('playwright');
-const { writeCookies, restoreCookies, cookiesPath } = require('./utils/write_cookies');
+const { writeCookies, restoreCookies, cookiesPath } = require('./write_cookies');
 const fs = require('fs')
 class CaptchaHarvester {
     constructor(site_key, site_host) {
